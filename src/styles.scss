@@ -1,0 +1,64 @@
+@import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
+@import '~@angular/material/prebuilt-themes/pink-bluegrey.css';
+
+body {
+  margin: 0;
+
+  .cursor-pointer:hover {
+    cursor: pointer;
+  }
+
+  .fs-16 {
+    font-size: 16px;
+  }
+
+  .fs-18 {
+    font-size: 18px;
+  }
+
+  .fs-20 {
+    font-size: 20px;
+  }
+
+  .fs-22 {
+    font-size: 22px;
+  }
+
+  .fs-24 {
+    font-size: 24px;
+  }
+
+  .fs-26 {
+    font-size: 26px;
+  }
+
+  .fs-34 {
+    font-size: 34px;
+  }
+
+  .px-15 {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .py-15 {
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }
+
+  .pl-15 {
+    padding-left: 15px;
+  }
+
+  .pr-15 {
+    padding-right: 15px;
+  }
+
+  .pt-15 {
+    padding-top: 15px;
+  }
+
+  .pb-15 {
+    padding-bottom: 15px;
+  }
+}

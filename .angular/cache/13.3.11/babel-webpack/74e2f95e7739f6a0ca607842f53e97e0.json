@@ -1,0 +1,1 @@
+{"ast":null,"code":"export const environment = {\n  production: true,\n  apiKey: 'c045c26922ab4bb2ae9151223230306',\n  apiUrl: 'https://api.weatherapi.com/v1/'\n};","map":null,"metadata":{},"sourceType":"module"}

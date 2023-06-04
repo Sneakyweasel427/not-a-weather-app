@@ -1,0 +1,130 @@
+<div *ngIf="!loading" class="">
+  <div class="topbar p-4">
+    <div class="container">
+      <h1 class="title w-100 py-4 fs-34 text-center">
+        Not A Weather App
+      </h1>
+      <div class="options d-flex justify-content-between">
+        <div class="search" [formGroup]="searchForm">
+          <mat-form-field class="search-field">
+            <input matInput class="search-input" placeholder="Search Another City" #searchInput [formControlName]="'city'" [value]="searchForm.get('city').value" (keyup.enter)="searchNewLocation(searchInput.value);">
+          </mat-form-field>
+        </div>
+        <div class="units">
+          <div class="pb-2">
+            <span class="cursor-pointer {{tempUnit === 'c' ? 'selected' : ''}}" (click)="onTempUnitChange('c')">Celsius</span> / <span class="cursor-pointer {{tempUnit === 'f' ? 'selected' : ''}}" (click)="onTempUnitChange('f')">Fahrenheit</span>
+          </div>
+          <div>
+            <span class="cursor-pointer {{measurementUnit === 'metric' ? 'selected' : ''}}" (click)="onMeasurementUnitChange('metric')">Metric</span> / <span class="cursor-pointer {{measurementUnit === 'empirical' ? 'selected' : ''}}" (click)="onMeasurementUnitChange('empirical')">Empirical</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <ng-container *ngIf="searching">
+    <div class="spinner-container py-5 d-flex justify-content-center">
+      <mat-spinner></mat-spinner>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="!searching && errorMessage">
+    <div class="error-message container text-center py-5">
+      <div class="py-5 fs-26">
+        {{this.errorMessage}} Please search again
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="!searching && !errorMessage">
+    <div class="weather-data">
+      <div class="main container py-5 text-center">
+        <div class="row pb-3">
+          <div class="col-12">
+            <div class="location pb-3">
+              <div class="fs-20 pb-2">Yesterday's Weather for</div>
+              <div class="fs-24">{{yesterdaysWeather.location.name + ', ' + yesterdaysWeather.location.region}}</div>
+              <div class="fs-24">{{yesterdaysWeather.location.country}}</div>
+            </div>
+            <div class="date fs-20">
+              {{yesterdaysWeather.forecast.forecastday[0].date_epoch * 1000 | date: 'MMMM dd, yyyy'}}
+            </div>
+            <div class="condition py-3">
+              <img class="icon" src="{{yesterdaysWeather.forecast.forecastday[0].day.condition.icon}}" alt="{{yesterdaysWeather.forecast.forecastday[0].day.condition.text}}">
+              <div class="condition-text fs-20">
+                {{yesterdaysWeather.forecast.forecastday[0].day.condition.text}}
+              </div>
+              <div class="avgtemp fs-22">
+                {{tempUnit === 'c' ? yesterdaysWeather.forecast.forecastday[0].day.avgtemp_c : yesterdaysWeather.forecast.forecastday[0].day.avgtemp_f}}&deg;
+              </div>
+            </div>
+            <div class="details d-flex justify-content-center">
+              <div class="left">
+                <div class="min pb-1 d-flex justify-content-between">
+                  <span class="d-block label">Min Temp: </span>
+                  <span class="d-block value">{{tempUnit === 'c' ? yesterdaysWeather.forecast.forecastday[0].day.mintemp_c : yesterdaysWeather.forecast.forecastday[0].day.mintemp_f}}&deg;</span>
+                </div>
+                <div class="max pb-1 d-flex justify-content-between">
+                  <span class="d-block label">Max Temp: </span>
+                  <span class="d-block value">{{tempUnit === 'c' ? yesterdaysWeather.forecast.forecastday[0].day.maxtemp_c : yesterdaysWeather.forecast.forecastday[0].day.maxtemp_f}}&deg;</span>
+                </div>
+                <div class="humidity pb-1 d-flex justify-content-between">
+                  <span class="d-block label">Humidity: </span>
+                  <span class="d-block value">{{yesterdaysWeather.forecast.forecastday[0].day.avghumidity}}%</span>
+                </div>
+                <div class="precip pb-1 d-flex justify-content-between">
+                  <span class="d-block label">Precipitation: </span>
+                  <span class="d-block value">{{measurementUnit === 'metric' ? yesterdaysWeather.forecast.forecastday[0].day.totalprecip_mm + ' mm' : yesterdaysWeather.forecast.forecastday[0].day.totalprecip_in + ' in'}}</span>
+                </div>
+              </div>
+              <div class="right">
+                <div class="wind pb-1 d-flex justify-content-between">
+                  <span class="d-block label">Max Wind Speed:</span>
+                  <span class="d-block value">{{measurementUnit === 'metric' ? yesterdaysWeather.forecast.forecastday[0].day.maxwind_kph + ' kph': yesterdaysWeather.forecast.forecastday[0].day.maxwind_mph + ' mph'}}</span>
+                </div>
+                <div class="vis pb-1 d-flex justify-content-between">
+                  <span class="d-block label">Average Visibility: </span>
+                  <span class="d-block value">{{measurementUnit === 'metric' ? yesterdaysWeather.forecast.forecastday[0].day.avgvis_km + ' km' : yesterdaysWeather.forecast.forecastday[0].day.avgvis_miles + ' miles'}}</span>
+                </div>
+                <div class="sunrise pb-1 d-flex justify-content-between">
+                  <span class="d-block label">Sunrise: </span>
+                  <span class="d-block value">{{yesterdaysWeather.forecast.forecastday[0].astro.sunrise}}</span>
+                </div>
+                <div class="sunset d-flex justify-content-between">
+                  <span class="d-block label">Sunrise: </span>
+                  <span class="d-block value">{{yesterdaysWeather.forecast.forecastday[0].astro.sunset}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="hourly-container mx-5 py-5">
+        <h4 class="text-center">Hourly Details</h4>
+        <div class="hourly d-flex py-3">
+          <div *ngFor="let hour of yesterdaysWeather.forecast.forecastday[0].hour; let index = index" class="hour px-15 py-15 text-center">
+            <div class="condition">
+              <div class="time font-weight-bold fs-18">
+                {{index}}:00
+              </div>
+              <img class="icon d-block mx-auto" src="{{hour.condition.icon}}" alt="{{hour.condition.text}}">
+              <div class="condition-text fs-18">
+                {{yesterdaysWeather.forecast.forecastday[0].day.condition.text}}
+              </div>
+              <div class="avgtemp fs-20 pb-15">
+                {{tempUnit === 'c' ? hour.temp_c : hour.temp_f}}&deg;
+              </div>
+              <div class="feelslike">
+                Feels Like: {{tempUnit === 'c' ? hour.feelslike_c : hour.feelslike_f}}&deg;
+              </div>
+              <div class="precip">
+                Precipitation: {{measurementUnit === 'metric' ? hour.precip_mm + ' mm' : hour.precip_in + ' in'}}
+              </div>
+              <div class="wind">
+                Wind: {{measurementUnit === 'metric' ? hour.wind_kph + ' kph' : hour.wind_mph + 'mph'}} {{hour.wind_dir}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+</div>
