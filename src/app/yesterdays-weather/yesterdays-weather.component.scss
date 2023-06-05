@@ -1,6 +1,6 @@
 .topbar {
   width:100%;
-  background-color: #00008b;
+  background-color: #10277a;
   color: #ffffff;
 
   .container {
@@ -34,6 +34,15 @@
     .selected {
       font-weight: bold;
       color: #e6726a;
+    }
+  }
+}
+
+.searched-locations {
+  .searched-location {
+    color: #e6726a;
+    &:hover {
+      color: #CD5951;
     }
   }
 }
@@ -75,7 +84,7 @@
     overflow-x: auto;
     .hour {
       flex: 0 0 60%;
-      background-color: #dddddd;
+      background-color: #eeeeee;
       margin-left: 7px;
       margin-right: 7px;
 
@@ -93,6 +102,21 @@
 
       @media (min-width: 1200px) {
         flex: 0 0 15%;
+      }
+    }
+  }
+}
+
+.todays-weather {
+  .row {
+    justify-content: space-evenly;
+
+    a {
+      color: #e6726a;
+
+      &:hover {
+        color: #CD5951;
+        text-decoration: none;
       }
     }
   }

@@ -6,6 +6,7 @@ import { lastValueFrom } from 'rxjs';
 import { WeatherService } from '../services/weather.service';
 import { UserDataModel } from '../models/user-data.model';
 import { WeatherModel } from '../models/weather.model';
+import {CookieService} from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-yesterdays-weather',
@@ -23,8 +24,11 @@ export class YesterdaysWeatherComponent implements OnInit {
   loading = true;
   searching: boolean;
   errorMessage: string;
+  returningUser: boolean;
+  favorites: string[] = [];
 
-  constructor(private weatherService: WeatherService, private datePipe: DatePipe, private fb: FormBuilder) { }
+  constructor(private weatherService: WeatherService, private datePipe: DatePipe, private fb: FormBuilder,
+              private cookieService: CookieService) { }
 
   ngOnInit(): void {
     this.searchForm = this.fb.group({
@@ -33,6 +37,12 @@ export class YesterdaysWeatherComponent implements OnInit {
 
     lastValueFrom(this.weatherService.getUserData()).then((userData: UserDataModel) => {
       this.userData = userData;
+      const cookies = this.cookieService.getAll();
+      if (cookies) {
+        Object.keys(cookies).forEach((cookie) => {
+          this.favorites.push(cookie);
+        });
+      }
       if (this.userData.country_code === 'US') {
         this.tempUnit = 'f';
         this.measurementUnit = 'empirical';
@@ -60,12 +70,18 @@ export class YesterdaysWeatherComponent implements OnInit {
     this.measurementUnit = unit;
   }
 
-  searchNewLocation(value) {
+  searchLocation(value) {
     this.searching = true;
     this.errorMessage = '';
     this.searchForm.get('city').disable();
     lastValueFrom(this.weatherService.getYesterdaysWeather(value, this.yesterday)).then((res: WeatherModel) => {
       this.yesterdaysWeather = res;
+      const simplifiedValue = value.toLowerCase();
+      const alreadyFavorited = this.favorites.find((f) => f === simplifiedValue);
+      if (!alreadyFavorited) {
+        this.favorites.push(simplifiedValue);
+        this.cookieService.set(simplifiedValue, simplifiedValue);
+      }
     }).catch((error: any) => {
       if (error.error.error.code === 1006) {
         this.errorMessage = error.error.error.message;

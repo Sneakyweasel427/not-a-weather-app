@@ -4,6 +4,7 @@ import { HttpClientModule} from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { YesterdaysWeatherModule } from './yesterdays-weather/yesterdays-weather.module';
+import {CookieService} from 'ngx-cookie-service';
 
 @NgModule({
   declarations: [
@@ -14,6 +15,7 @@ import { YesterdaysWeatherModule } from './yesterdays-weather/yesterdays-weather
     HttpClientModule,
     YesterdaysWeatherModule
   ],
+  providers: [CookieService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
